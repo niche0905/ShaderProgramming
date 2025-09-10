@@ -1,6 +1,9 @@
 #version 330
 
-in vec3 a_Position;
+in vec3 a_Position;	// attribute vec3 a_Position;와 같은 의미
+in vec4 a_Color;
+out vec4 v_Color;	// fragment shader로 전달할 변수
+					// varying vec4 v_Color;와 같은 의미
 uniform vec4 u_Trans;
 
 void main()
@@ -10,4 +13,6 @@ void main()
 	newPosition.z = 0;
 	newPosition.w= 1;
 	gl_Position = newPosition;
+
+	v_Color = a_Color;
 }
