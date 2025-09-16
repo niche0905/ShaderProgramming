@@ -54,6 +54,9 @@ void Renderer::CreateVertexBufferObjects()
 		0.f, 0.f, 0.f, 
 		1.f, 0.f, 0.f, 
 		1.f, 1.f, 0.f, //Triangle1
+		0.f, 0.f, 0.f,
+		1.f, 1.f, 0.f,
+		0.f, 1.f, 0.f, //Triganle2
 	};
 
 	glGenBuffers(1, &m_VBOTestPos);
@@ -65,7 +68,10 @@ void Renderer::CreateVertexBufferObjects()
 	{
 		1.f, 0.f, 0.f, 1.f,
 		0.f, 1.f, 0.f, 1.f,
-		0.f, 0.f, 1.f, 1.f //Triangle1
+		0.f, 0.f, 1.f, 1.f, //Triangle1
+		1.f, 0.f, 0.f, 1.f,
+		0.f, 1.f, 0.f, 1.f,
+		0.f, 0.f, 1.f, 1.f, //Triangle2
 	};
 
 	glGenBuffers(1, &m_VBOTestColor);
@@ -230,7 +236,7 @@ void Renderer::DrawTest()
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOTestColor);
 	glVertexAttribPointer(aColorLoc, 4 /* num */, GL_FLOAT, GL_FALSE, sizeof(float) * 4 /* stride */, 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisableVertexAttribArray(aPosLoc);		// 요즘은 필요 없는데 안전장치
 	glDisableVertexAttribArray(aColorLoc);
