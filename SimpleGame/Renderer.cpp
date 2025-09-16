@@ -48,15 +48,17 @@ void Renderer::CreateVertexBufferObjects()
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(rect), rect, GL_STATIC_DRAW);
 
+	float center = 0.5f;
+	float size = 0.1;
 	float testPos[]
 		=
 	{
-		0.f, 0.f, 0.f, 
-		1.f, 0.f, 0.f, 
-		1.f, 1.f, 0.f, //Triangle1
-		0.f, 0.f, 0.f,
-		1.f, 1.f, 0.f,
-		0.f, 1.f, 0.f, //Triganle2
+		(0.f - center)* size, (0.f - center)* size, 0.f,
+		(1.f - center)* size, (0.f - center)* size, 0.f,
+		(1.f - center)* size, (1.f - center)* size, 0.f, //Triangle1
+		(0.f - center)* size, (0.f - center)* size, 0.f,
+		(1.f - center)* size, (1.f - center)* size, 0.f,
+		(0.f - center)* size, (1.f - center)* size, 0.f, //Triganle2
 	};
 
 	glGenBuffers(1, &m_VBOTestPos);
