@@ -38,5 +38,6 @@ private:
 	GLuint m_VBOTestPos = 0;
 	GLuint m_VBOTestColor = 0;
 
+	float m_Time = 0;
 };
 
