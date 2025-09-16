@@ -9,8 +9,9 @@ uniform float u_Time;
 
 void main()
 {
+	float value = (2 * fract(u_Time)) - 1;
 	vec4 newPosition = vec4(a_Position, 1);
-	newPosition.xy += vec2(fract(u_Time), 0);
+	newPosition.xy += vec2(value, 0);
 	gl_Position = newPosition;
 
 	v_Color = a_Color;
