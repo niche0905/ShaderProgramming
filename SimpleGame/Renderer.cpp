@@ -20,9 +20,13 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	//Load shaders
 	m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
 	m_TestShader = CompileShaders("./Shaders/Test.vs", "./Shaders/Test.fs");	// shader program 만들기
+	m_ParticleShader = CompileShaders("./Shaders/Particle.vs", "./Shaders/Particle.fs");	// shader program 만들기
 	
 	//Create VBOs
 	CreateVertexBufferObjects();
+
+	// Create Particles
+	CreateParticles(1000);
 
 	if (m_SolidRectShader > 0 && m_VBORect > 0)
 	{
@@ -270,8 +274,121 @@ void Renderer::DrawTest()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void Renderer::DrawParticle()
+{
+	m_Time += 0.00016f;
+
+	//Program select
+	GLuint shader = m_ParticleShader;
+	glUseProgram(shader);		// api에서 test shader program 선택
+
+	int uTimeLoc = glGetUniformLocation(shader, "u_Time");
+	glUniform1f(uTimeLoc, m_Time);
+
+	int aPosLoc = glGetAttribLocation(shader, "a_Position");
+	glEnableVertexAttribArray(aPosLoc);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOParticles);
+	glVertexAttribPointer(aPosLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, 0);
+
+	int aValueLoc = glGetAttribLocation(shader, "a_Value");
+	glEnableVertexAttribArray(aValueLoc);
+	glVertexAttribPointer(aValueLoc, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid*)(sizeof(float) * 3));
+
+	int aColorLoc = glGetAttribLocation(shader, "a_Color");
+	glEnableVertexAttribArray(aColorLoc);
+	glVertexAttribPointer(aColorLoc, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid*)(sizeof(float) * 4));
+
+	glDrawArrays(GL_TRIANGLES, 0, m_VBOParticlesVertexCount);
+
+	glDisableVertexAttribArray(aPosLoc);		// 요즘은 필요 없는데 안전장치
+	glDisableVertexAttribArray(aColorLoc);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void Renderer::GetGLPosition(float x, float y, float *newX, float *newY)
 {
 	*newX = x * 2.f / m_WindowSizeX;
 	*newY = y * 2.f / m_WindowSizeY;
+}
+
+void Renderer::CreateParticles(int count)
+{
+	int particleCount = count;
+	int verticesCount = count * 6;									// 1 particle = 2 triangles = 6 vertices
+	int floatCountsPerVertex = 3 + 1 + 4;							// x, y, z, value + r, g, b, a
+	int totalFloatsCount = floatCountsPerVertex * verticesCount;	// 
+	int floatCountsPerParticle = floatCountsPerVertex * 6;			// 1 particle = 24 floats
+
+	float* temp = new float[totalFloatsCount];
+
+	for (int i = 0; i < particleCount; ++i) {
+
+		int index = i * floatCountsPerParticle; // 1 particle = 24 floats
+
+		float size = 0.1f;
+		float centerX = 0.f;
+		float centerY = 0.f;
+		float value = 1.f;
+
+		temp[index] = centerX - size / 2; ++index;	// x
+		temp[index] = centerY - size / 2; ++index;	// y
+		temp[index] = 0.f; ++index;					// z
+		temp[index] = value; ++index;				// value
+		temp[index] = 1.f; ++index;					// r
+		temp[index] = 1.f; ++index;					// g
+		temp[index] = 1.f; ++index;					// b
+		temp[index] = 1.f; ++index;					// a
+
+		temp[index] = centerX + size / 2; ++index;
+		temp[index] = centerY - size / 2; ++index;
+		temp[index] = 0.f; ++index;
+		temp[index] = value; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+
+		temp[index] = centerX + size / 2; ++index;
+		temp[index] = centerY + size / 2; ++index;
+		temp[index] = 0.f; ++index;
+		temp[index] = value; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+
+		temp[index] = centerX - size / 2; ++index;
+		temp[index] = centerY - size / 2; ++index;
+		temp[index] = 0.f; ++index;
+		temp[index] = value; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+
+		temp[index] = centerX + size / 2; ++index;
+		temp[index] = centerY + size / 2; ++index;
+		temp[index] = 0.f; ++index;
+		temp[index] = value; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+
+		temp[index] = centerX - size / 2; ++index;
+		temp[index] = centerY + size / 2; ++index;
+		temp[index] = 0.f; ++index;
+		temp[index] = value; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+		temp[index] = 1.f; ++index;
+	}
+
+	glGenBuffers(1, &m_VBOParticles);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOParticles);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * totalFloatsCount, temp, GL_STATIC_DRAW);
+
+	m_VBOParticlesVertexCount = verticesCount;
 }
