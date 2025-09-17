@@ -326,9 +326,9 @@ void Renderer::CreateParticles(int count)
 
 		int index = i * floatCountsPerParticle; // 1 particle = 24 floats
 
-		float size = 0.1f;
-		float centerX = 0.f;
-		float centerY = 0.f;
+		float size = 0.05f * (((float)rand() / (float)RAND_MAX));
+		float centerX = (((float)rand() / (float)RAND_MAX)) * 2.f - 1.f;
+		float centerY = (((float)rand() / (float)RAND_MAX)) * 2.f - 1.f;
 		float value = 1.f;
 
 		temp[index] = centerX - size / 2; ++index;	// x

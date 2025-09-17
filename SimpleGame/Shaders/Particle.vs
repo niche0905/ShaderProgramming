@@ -12,13 +12,7 @@ uniform float u_Time;
 
 void main()
 {
-	float value = (2 * fract(u_Time)) - 1;
-	float rad = (value + 1) * c_PI;		// 0 ~ 2PI
-	float radius = 1.0 * a_Value;
-	float x = radius * cos(rad);
-	float y = radius * sin(rad);
 	vec4 newPosition = vec4(a_Position, 1);
-	newPosition.xy += vec2(x, y);
 	gl_Position = newPosition;
 
 	v_Color = a_Color;
