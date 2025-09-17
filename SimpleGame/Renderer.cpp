@@ -254,6 +254,7 @@ void Renderer::DrawTest()
 	glVertexAttribPointer(aPosLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 4, 0);
 
 	int aValueLoc = glGetAttribLocation(m_TestShader, "a_Value");
+	glEnableVertexAttribArray(aValueLoc);
 	glVertexAttribPointer(aValueLoc, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid*)(sizeof(float) * 3));
 
 	int aColorLoc = glGetAttribLocation(m_TestShader, "a_Color");
