@@ -329,61 +329,66 @@ void Renderer::CreateParticles(int count)
 		float size = 0.05f * (((float)rand() / (float)RAND_MAX));
 		float centerX = (((float)rand() / (float)RAND_MAX)) * 2.f - 1.f;
 		float centerY = (((float)rand() / (float)RAND_MAX)) * 2.f - 1.f;
-		float value = 1.f;
+		float value = (((float)rand() / (float)RAND_MAX));
+		float r = (((float)rand() / (float)RAND_MAX));
+		float g = (((float)rand() / (float)RAND_MAX));
+		float b = (((float)rand() / (float)RAND_MAX));
+		float a = (((float)rand() / (float)RAND_MAX));
+
 
 		temp[index] = centerX - size / 2; ++index;	// x
 		temp[index] = centerY - size / 2; ++index;	// y
 		temp[index] = 0.f; ++index;					// z
 		temp[index] = value; ++index;				// value
-		temp[index] = 1.f; ++index;					// r
-		temp[index] = 1.f; ++index;					// g
-		temp[index] = 1.f; ++index;					// b
-		temp[index] = 1.f; ++index;					// a
+		temp[index] = r; ++index;					// r
+		temp[index] = g; ++index;					// g
+		temp[index] = b; ++index;					// b
+		temp[index] = a; ++index;					// a
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY - size / 2; ++index;
 		temp[index] = 0.f; ++index;
 		temp[index] = value; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
+		temp[index] = r; ++index;
+		temp[index] = g; ++index;
+		temp[index] = b; ++index;
+		temp[index] = a; ++index;
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
 		temp[index] = 0.f; ++index;
 		temp[index] = value; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
+		temp[index] = r; ++index;
+		temp[index] = g; ++index;
+		temp[index] = b; ++index;
+		temp[index] = a; ++index;
 
 		temp[index] = centerX - size / 2; ++index;
 		temp[index] = centerY - size / 2; ++index;
 		temp[index] = 0.f; ++index;
 		temp[index] = value; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
+		temp[index] = r; ++index;
+		temp[index] = g; ++index;
+		temp[index] = b; ++index;
+		temp[index] = a; ++index;
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
 		temp[index] = 0.f; ++index;
 		temp[index] = value; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
+		temp[index] = r; ++index;
+		temp[index] = g; ++index;
+		temp[index] = b; ++index;
+		temp[index] = a; ++index;
 
 		temp[index] = centerX - size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
 		temp[index] = 0.f; ++index;
 		temp[index] = value; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
-		temp[index] = 1.f; ++index;
+		temp[index] = r; ++index;
+		temp[index] = g; ++index;
+		temp[index] = b; ++index;
+		temp[index] = a; ++index;
 	}
 
 	glGenBuffers(1, &m_VBOParticles);
