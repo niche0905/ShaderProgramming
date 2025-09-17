@@ -53,12 +53,20 @@ void Renderer::CreateVertexBufferObjects()
 	float testPos[]
 		=
 	{
-		(0.f - center)* size, (0.f - center)* size, 0.f,
-		(1.f - center)* size, (0.f - center)* size, 0.f,
-		(1.f - center)* size, (1.f - center)* size, 0.f, //Triangle1
-		(0.f - center)* size, (0.f - center)* size, 0.f,
-		(1.f - center)* size, (1.f - center)* size, 0.f,
-		(0.f - center)* size, (1.f - center)* size, 0.f, //Triganle2
+		(0.f - center)* size, (0.f - center)* size, 0.f, 1.0f,	// x, y, z 정보를 가지고 있엇음
+		(1.f - center)* size, (0.f - center)* size, 0.f, 1.0f,	// 이제 value를 추가함
+		(1.f - center)* size, (1.f - center)* size, 0.f, 1.0f,
+		(0.f - center)* size, (0.f - center)* size, 0.f, 1.0f,
+		(1.f - center)* size, (1.f - center)* size, 0.f, 1.0f,
+		(0.f - center)* size, (1.f - center)* size, 0.f, 1.0f,	// Quad1
+
+
+		(0.f - center)* size, (0.f - center)* size, 0.f, 0.5f,
+		(1.f - center)* size, (0.f - center)* size, 0.f, 0.5f,
+		(1.f - center)* size, (1.f - center)* size, 0.f, 0.5f,
+		(0.f - center)* size, (0.f - center)* size, 0.f, 0.5f,
+		(1.f - center)* size, (1.f - center)* size, 0.f, 0.5f,
+		(0.f - center)* size, (1.f - center)* size, 0.f, 0.5f,	// Quad2
 	};
 
 	glGenBuffers(1, &m_VBOTestPos);
@@ -70,10 +78,17 @@ void Renderer::CreateVertexBufferObjects()
 	{
 		1.f, 0.f, 0.f, 1.f,
 		0.f, 1.f, 0.f, 1.f,
-		0.f, 0.f, 1.f, 1.f, //Triangle1
+		0.f, 0.f, 1.f, 1.f,
 		1.f, 0.f, 0.f, 1.f,
 		0.f, 1.f, 0.f, 1.f,
-		0.f, 0.f, 1.f, 1.f, //Triangle2
+		0.f, 0.f, 1.f, 1.f,	// Quad1
+
+		1.f, 0.f, 0.f, 1.f,
+		0.f, 1.f, 0.f, 1.f,
+		0.f, 0.f, 1.f, 1.f,
+		1.f, 0.f, 0.f, 1.f,
+		0.f, 1.f, 0.f, 1.f,
+		0.f, 0.f, 1.f, 1.f,	// Quad2
 	};
 
 	glGenBuffers(1, &m_VBOTestColor);
@@ -236,14 +251,17 @@ void Renderer::DrawTest()
 	int aPosLoc = glGetAttribLocation(m_TestShader, "a_Position");
 	glEnableVertexAttribArray(aPosLoc);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOTestPos);
-	glVertexAttribPointer(aPosLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glVertexAttribPointer(aPosLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 4, 0);
+
+	int aValueLoc = glGetAttribLocation(m_TestShader, "a_Value");
+	glVertexAttribPointer(aValueLoc, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid*)(sizeof(float) * 3));
 
 	int aColorLoc = glGetAttribLocation(m_TestShader, "a_Color");
 	glEnableVertexAttribArray(aColorLoc);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOTestColor);
 	glVertexAttribPointer(aColorLoc, 4 /* num */, GL_FLOAT, GL_FALSE, sizeof(float) * 4 /* stride */, 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDrawArrays(GL_TRIANGLES, 0, 12);
 
 	glDisableVertexAttribArray(aPosLoc);		// 요즘은 필요 없는데 안전장치
 	glDisableVertexAttribArray(aColorLoc);
