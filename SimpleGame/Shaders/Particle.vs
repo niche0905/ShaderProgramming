@@ -3,6 +3,7 @@
 in vec3 a_Position;	// attribute vec3 a_Position;와 같은 의미
 in float a_Value;
 in vec4 a_Color;
+in float a_STime;
 out vec4 v_Color;	// fragment shader로 전달할 변수
 					// varying vec4 v_Color;와 같은 의미
 
@@ -13,13 +14,23 @@ uniform float u_Time;
 
 void main()
 {
-	float t = fract(u_Time);
-	float tt = t * t;
-	float x = 0;
-	float y = 0.5 * c_G.y * tt;
+	float newTime = u_Time - a_STime;
 	vec4 newPosition = vec4(a_Position, 1);
-	newPosition.xy += vec2(x, y);
-	gl_Position = newPosition;
 
+	if (newTime > 0)
+	{
+		float t = fract(newTime);
+		float tt = t * t;
+		float x = 0;
+		float y = 0.5 * c_G.y * tt;
+		newPosition.xy += vec2(x, y);
+	}
+	else 
+	{
+		newPosition.xy = vec2(-100000, 0);
+	}
+
+	gl_Position = newPosition;
 	v_Color = a_Color;
+
 }
