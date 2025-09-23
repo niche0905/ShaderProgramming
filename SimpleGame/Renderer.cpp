@@ -303,7 +303,7 @@ void Renderer::DrawParticle()
 	int uTimeLoc = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uTimeLoc, m_Time);
 
-	int stride = 9;
+	int stride = 12;
 
 	int aPosLoc = glGetAttribLocation(shader, "a_Position");
 	glEnableVertexAttribArray(aPosLoc);
@@ -322,11 +322,16 @@ void Renderer::DrawParticle()
 	glEnableVertexAttribArray(aSTimeLoc);
 	glVertexAttribPointer(aSTimeLoc, 1, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 8));
 
+	int aVelLoc = glGetAttribLocation(shader, "a_Velocity");
+	glEnableVertexAttribArray(aVelLoc);
+	glVertexAttribPointer(aVelLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 9));
+
 	glDrawArrays(GL_TRIANGLES, 0, m_VBOParticlesVertexCount);
 
 	glDisableVertexAttribArray(aPosLoc);		// 요즘은 필요 없는데 안전장치
 	glDisableVertexAttribArray(aColorLoc);
 	glDisableVertexAttribArray(aSTimeLoc);
+	glDisableVertexAttribArray(aVelLoc);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -341,7 +346,7 @@ void Renderer::CreateParticles(int count)
 {
 	int particleCount = count;
 	int verticesCount = count * 6;									// 1 particle = 2 triangles = 6 vertices
-	int floatCountsPerVertex = 3 + 1 + 4 + 1;							// x, y, z, value + r, g, b, a + s Time
+	int floatCountsPerVertex = 3 + 1 + 4 + 1 + 3;							// x, y, z, value + r, g, b, a + s Time + vx, vy, vz
 	int totalFloatsCount = floatCountsPerVertex * verticesCount;	// 
 	int floatCountsPerParticle = floatCountsPerVertex * 6;			// 1 particle = 24 floats
 
@@ -360,6 +365,9 @@ void Renderer::CreateParticles(int count)
 		float b = (((float)rand() / (float)RAND_MAX));
 		float a = (((float)rand() / (float)RAND_MAX));
 		float sTime = (((float)rand() / (float)RAND_MAX)) * 2.f;
+		float vx = (((float)rand() / (float)RAND_MAX)) * 2.f - 1.f;
+		float vy = (((float)rand() / (float)RAND_MAX)) * 2.f - 1.f;
+		float vz = 0.f;
 
 
 		temp[index] = centerX - size / 2; ++index;	// x
@@ -371,6 +379,9 @@ void Renderer::CreateParticles(int count)
 		temp[index] = b; ++index;					// b
 		temp[index] = a; ++index;					// a
 		temp[index] = sTime; ++index;				// sTime
+		temp[index] = vx; ++index;					// vx
+		temp[index] = vy; ++index;					// vy
+		temp[index] = vz; ++index;					// vz
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY - size / 2; ++index;
@@ -381,6 +392,9 @@ void Renderer::CreateParticles(int count)
 		temp[index] = b; ++index;
 		temp[index] = a; ++index;
 		temp[index] = sTime; ++index;
+		temp[index] = vx; ++index;
+		temp[index] = vy; ++index;
+		temp[index] = vz; ++index;
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
@@ -391,6 +405,9 @@ void Renderer::CreateParticles(int count)
 		temp[index] = b; ++index;
 		temp[index] = a; ++index;
 		temp[index] = sTime; ++index;
+		temp[index] = vx; ++index;
+		temp[index] = vy; ++index;
+		temp[index] = vz; ++index;
 
 		temp[index] = centerX - size / 2; ++index;
 		temp[index] = centerY - size / 2; ++index;
@@ -401,6 +418,9 @@ void Renderer::CreateParticles(int count)
 		temp[index] = b; ++index;
 		temp[index] = a; ++index;
 		temp[index] = sTime; ++index;
+		temp[index] = vx; ++index;
+		temp[index] = vy; ++index;
+		temp[index] = vz; ++index;
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
@@ -411,6 +431,9 @@ void Renderer::CreateParticles(int count)
 		temp[index] = b; ++index;
 		temp[index] = a; ++index;
 		temp[index] = sTime; ++index;
+		temp[index] = vx; ++index;
+		temp[index] = vy; ++index;
+		temp[index] = vz; ++index;
 
 		temp[index] = centerX - size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
@@ -421,11 +444,16 @@ void Renderer::CreateParticles(int count)
 		temp[index] = b; ++index;
 		temp[index] = a; ++index;
 		temp[index] = sTime; ++index;
+		temp[index] = vx; ++index;
+		temp[index] = vy; ++index;
+		temp[index] = vz; ++index;
 	}
 
 	glGenBuffers(1, &m_VBOParticles);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOParticles);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * totalFloatsCount, temp, GL_STATIC_DRAW);
+
+	delete[] temp;
 
 	m_VBOParticlesVertexCount = verticesCount;
 }

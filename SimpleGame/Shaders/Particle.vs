@@ -4,6 +4,7 @@ in vec3 a_Position;	// attribute vec3 a_Position;와 같은 의미
 in float a_Value;
 in vec4 a_Color;
 in float a_STime;
+in vec3 a_Velocity;
 out vec4 v_Color;	// fragment shader로 전달할 변수
 					// varying vec4 v_Color;와 같은 의미
 
@@ -19,7 +20,7 @@ void main()
 
 	if (newTime > 0)
 	{
-		float t = fract(newTime);
+		float t = fract(newTime / 2) * 2;
 		float tt = t * t;
 		float x = 0;
 		float y = 0.5 * c_G.y * tt;
