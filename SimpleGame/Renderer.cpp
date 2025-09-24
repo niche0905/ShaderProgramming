@@ -24,7 +24,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	CreateVertexBufferObjects();
 
 	// Create Particles
-	CreateParticles(10);
+	CreateParticles(1000);
 
 	if (m_SolidRectShader > 0 && m_VBORect > 0)
 	{
@@ -362,8 +362,8 @@ void Renderer::CreateParticles(int count)
 		int index = i * floatCountsPerParticle; // 1 particle = 24 floats
 
 		float size = 0.05f * (((float)rand() / (float)RAND_MAX));
-		float centerX = (((float)rand() / (float)RAND_MAX)) * 2.f - 1.f;
-		float centerY = (((float)rand() / (float)RAND_MAX)) * 2.f - 1.f;
+		float centerX = 0.f;// (((float)rand() / (float)RAND_MAX)) * 2.f - 1.f;
+		float centerY = 0.f;// (((float)rand() / (float)RAND_MAX)) * 2.f - 1.f;
 		float value = (((float)rand() / (float)RAND_MAX));
 		float r = (((float)rand() / (float)RAND_MAX));
 		float g = (((float)rand() / (float)RAND_MAX));

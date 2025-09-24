@@ -24,8 +24,8 @@ void main()
 	{
 		float t = fract(newTime / lifeTime) * lifeTime;
 		float tt = t * t;
-		float x = 0;
-		float y = 0.5 * c_G.y * tt;
+		float x = a_Velocity.x * t + 0.5 * c_G.x * tt;
+		float y = a_Velocity.y * t + 0.5 * c_G.y * tt;
 		newPosition.xy += vec2(x, y);
 		newAlpha = 1 - t / lifeTime;
 	}
