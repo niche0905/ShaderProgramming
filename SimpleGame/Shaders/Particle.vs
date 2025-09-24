@@ -5,6 +5,7 @@ in float a_Value;
 in vec4 a_Color;
 in float a_STime;
 in vec3 a_Velocity;
+in float a_LifeTime;
 out vec4 v_Color;	// fragment shader로 전달할 변수
 					// varying vec4 v_Color;와 같은 의미
 
@@ -15,7 +16,7 @@ uniform float u_Time;
 
 void main()
 {
-	float lifeTime = 0.3f;
+	float lifeTime = a_LifeTime;
 	float newAlpha = 1.f;
 	float newTime = u_Time - a_STime;
 	vec4 newPosition = vec4(a_Position, 1);
