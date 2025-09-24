@@ -15,16 +15,19 @@ uniform float u_Time;
 
 void main()
 {
+	float lifeTime = 0.3f;
+	float newAlpha = 1.f;
 	float newTime = u_Time - a_STime;
 	vec4 newPosition = vec4(a_Position, 1);
 
 	if (newTime > 0)
 	{
-		float t = fract(newTime / 2) * 2;
+		float t = fract(newTime / lifeTime) * lifeTime;
 		float tt = t * t;
 		float x = 0;
 		float y = 0.5 * c_G.y * tt;
 		newPosition.xy += vec2(x, y);
+		newAlpha = 1 - t / lifeTime;
 	}
 	else 
 	{
@@ -32,6 +35,6 @@ void main()
 	}
 
 	gl_Position = newPosition;
-	v_Color = a_Color;
+	v_Color = vec4(a_Color.rgb, newAlpha);
 
 }
