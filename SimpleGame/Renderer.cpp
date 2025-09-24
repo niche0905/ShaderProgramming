@@ -306,7 +306,10 @@ void Renderer::DrawParticle()
 	int uTimeLoc = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uTimeLoc, m_Time);
 
-	int stride = 13;
+	int uForceLoc = glGetUniformLocation(shader, "u_Force");
+	glUniform3f(uForceLoc, 4, 0, 0);
+
+	int stride = 14;
 
 	int aPosLoc = glGetAttribLocation(shader, "a_Position");
 	glEnableVertexAttribArray(aPosLoc);
@@ -333,6 +336,10 @@ void Renderer::DrawParticle()
 	glEnableVertexAttribArray(aLTLoc);
 	glVertexAttribPointer(aLTLoc, 1, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 12));
 
+	int aMassLoc = glGetAttribLocation(shader, "a_Mass");
+	glEnableVertexAttribArray(aMassLoc);
+	glVertexAttribPointer(aMassLoc, 1, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 13));
+
 	glDrawArrays(GL_TRIANGLES, 0, m_VBOParticlesVertexCount);
 
 	glDisableVertexAttribArray(aPosLoc);		// 요즘은 필요 없는데 안전장치
@@ -340,6 +347,7 @@ void Renderer::DrawParticle()
 	glDisableVertexAttribArray(aSTimeLoc);
 	glDisableVertexAttribArray(aVelLoc);
 	glDisableVertexAttribArray(aLTLoc);
+	glDisableVertexAttribArray(aMassLoc);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -356,7 +364,7 @@ void Renderer::CreateParticles(int count)
 {
 	int particleCount = count;
 	int verticesCount = count * 6;									// 1 particle = 2 triangles = 6 vertices
-	int floatCountsPerVertex = 3 + 1 + 4 + 1 + 3 + 1;							// x, y, z, value + r, g, b, a + s Time + vx, vy, vz + lifeTime
+	int floatCountsPerVertex = 3 + 1 + 4 + 1 + 3 + 1 + 1;							// x, y, z, value + r, g, b, a + s Time + vx, vy, vz + lifeTime
 	int totalFloatsCount = floatCountsPerVertex * verticesCount;	// 
 	int floatCountsPerParticle = floatCountsPerVertex * 6;			// 1 particle = 24 floats
 
@@ -379,6 +387,7 @@ void Renderer::CreateParticles(int count)
 		float vy = (((float)rand() / (float)RAND_MAX)) * 5.f;
 		float vz = 0.f;
 		float lifeTime = (((float)rand() / (float)RAND_MAX)) * 0.3f + 0.3f;
+		float mass = (((float)rand() / (float)RAND_MAX)) * 1.f + 0.1f;
 
 
 		temp[index] = centerX - size / 2; ++index;	// x
@@ -394,6 +403,7 @@ void Renderer::CreateParticles(int count)
 		temp[index] = vy; ++index;					// vy
 		temp[index] = vz; ++index;					// vz
 		temp[index] = lifeTime; ++index;			// lifeTime
+		temp[index] = mass; ++index;				// mass
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY - size / 2; ++index;
@@ -408,6 +418,7 @@ void Renderer::CreateParticles(int count)
 		temp[index] = vy; ++index;
 		temp[index] = vz; ++index;
 		temp[index] = lifeTime; ++index;
+		temp[index] = mass; ++index;
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
@@ -422,6 +433,7 @@ void Renderer::CreateParticles(int count)
 		temp[index] = vy; ++index;
 		temp[index] = vz; ++index;
 		temp[index] = lifeTime; ++index;
+		temp[index] = mass; ++index;
 
 		temp[index] = centerX - size / 2; ++index;
 		temp[index] = centerY - size / 2; ++index;
@@ -436,6 +448,7 @@ void Renderer::CreateParticles(int count)
 		temp[index] = vy; ++index;
 		temp[index] = vz; ++index;
 		temp[index] = lifeTime; ++index;
+		temp[index] = mass; ++index;
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
@@ -450,6 +463,7 @@ void Renderer::CreateParticles(int count)
 		temp[index] = vy; ++index;
 		temp[index] = vz; ++index;
 		temp[index] = lifeTime; ++index;
+		temp[index] = mass; ++index;
 
 		temp[index] = centerX - size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
@@ -464,6 +478,7 @@ void Renderer::CreateParticles(int count)
 		temp[index] = vy; ++index;
 		temp[index] = vz; ++index;
 		temp[index] = lifeTime; ++index;
+		temp[index] = mass; ++index;
 	}
 
 	glGenBuffers(1, &m_VBOParticles);
