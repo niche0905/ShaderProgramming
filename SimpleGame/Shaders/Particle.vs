@@ -7,6 +7,7 @@ in float a_STime;
 in vec3 a_Velocity;
 in float a_LifeTime;
 in float a_Mass;
+in float a_Period;
 out vec4 v_Color;	// fragment shader로 전달할 변수
 					// varying vec4 v_Color;와 같은 의미
 
@@ -49,7 +50,7 @@ void sinParticle()
 	float newAlpha = 1.f;
 	float lifeTime = a_LifeTime;
 	float amp = 2 * (a_Value) - 1;
-	float period = 2;
+	float period = a_Period * 2;
 
 	float newTime = u_Time - a_STime;
 	if (newTime > 0)
