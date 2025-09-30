@@ -46,6 +46,10 @@ void fountain()
 
 void sinParticle()
 {
+	vec4 centerC = vec4(1, 1, 1, 1);
+	vec4 borderC = vec4(1, 0, 0, 1);
+	vec4 newColor = a_Color;
+
 	vec4 newPosition = vec4(a_Position, 1);
 	float newAlpha = 1.f;
 	float lifeTime = a_LifeTime;
@@ -63,16 +67,17 @@ void sinParticle()
 
 		newPosition.xy += vec2(x, y);
 		newAlpha = 1 - t / lifeTime;
+
+		float d = abs(y);
+		newColor = mix(centerC, borderC, d);
 	}
 	else 
 	{
 		newPosition.xy = vec2(-100000, 0);
 	}
 
-
-
 	gl_Position = newPosition;
-	v_Color = vec4(a_Color.rgb, newAlpha);
+	v_Color = vec4(newColor.rgb, newAlpha);
 }
 
 void main()
