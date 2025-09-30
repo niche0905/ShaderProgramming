@@ -58,6 +58,7 @@ void sinParticle()
 		float y = sin(2 * c_PI * (t / lifeTime));
 
 		newPosition.xy += vec2(x, y);
+		newAlpha = 1 - t / lifeTime;
 	}
 	else 
 	{
