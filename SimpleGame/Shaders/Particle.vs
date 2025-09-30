@@ -47,19 +47,24 @@ void sinParticle()
 {
 	vec4 newPosition = vec4(a_Position, 1);
 	float newAlpha = 1.f;
+	float lifeTime = a_LifeTime;
 
 	float newTime = u_Time - a_STime;
 	if (newTime > 0)
 	{
-		float t = fract(newTime);
-		float x = 2 * t;
-		float y = sin(2 * c_PI * t);
-		newPosition.xy += vec2(-1 + x, a_Value * y);
+		float t = fract(newTime / lifeTime) * lifeTime;
+		float tt = t * t;
+		float x = 2 * (t / lifeTime) - 1;
+		float y = sin(2 * c_PI * (t / lifeTime));
+
+		newPosition.xy += vec2(x, y);
 	}
 	else 
 	{
 		newPosition.xy = vec2(-100000, 0);
 	}
+
+
 
 	gl_Position = newPosition;
 	v_Color = vec4(a_Color.rgb, newAlpha);
