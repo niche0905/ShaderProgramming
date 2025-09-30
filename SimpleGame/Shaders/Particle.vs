@@ -91,13 +91,19 @@ void circleParticle()
 	float newTime = u_Time - a_STime;
 	if (newTime > 0)
 	{
-		float t = fract(newTime / lifeTime) * lifeTime;
-		float tt = t * t;
 		float theta = 2 * c_PI * a_Value;
 		float x = radius * cos(theta);
 		float y = radius * sin(theta);
 
-		newPosition.xy += vec2(x, y);
+		float t = fract(newTime / lifeTime) * lifeTime;
+		float tt = t * t;
+
+		float newX = x + 0.5 * c_G.x * tt;
+		float newY = y + 0.5 * c_G.y * tt;
+
+		newAlpha = 1 - t / lifeTime;
+
+		newPosition.xy += vec2(newX, newY);
 	}
 	else 
 	{
