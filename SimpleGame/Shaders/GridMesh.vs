@@ -8,7 +8,13 @@ uniform float u_Time;
 
 void main()
 {
-	vec4 newPosition = vec4(a_Position, 1);
+	float val = 0.1;
+
+	float x = a_Position.x;
+	float theta = (x - (-0.5)) / (0.5 - (-0.5)) * 3.14 * 2;
+	float dy = val * sin(theta);
+
+	vec4 newPosition = vec4(a_Position.x, a_Position.y + dy, a_Position.z, 1);
 	gl_Position = newPosition;
 
 	v_Color = vec4(1);
