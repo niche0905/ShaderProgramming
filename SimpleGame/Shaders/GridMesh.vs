@@ -15,12 +15,12 @@ void main()
 	float value = (a_Position.x + 0.5) * 2 * c_PI;
 	float value1 = a_Position.x + 0.5;
 	float dx = 0;
-	float dy = value1 * 0.3 * sin(value + u_Time * 10);
+	float dy = value1 * 0.3 * sin(value - u_Time * 10);
 
 	newPosition.y *= (1 - value1);
 	newPosition.xy += vec2(dx, dy);
 
-	float shading = (sin(value + u_Time * 10) + 1) / 2 + 0.2;
+	float shading = (sin(value - u_Time * 10) + 1) / 2 + 0.2;
 
 	gl_Position = newPosition;
 
