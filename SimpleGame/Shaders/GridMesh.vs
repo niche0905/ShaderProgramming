@@ -20,7 +20,9 @@ void main()
 	newPosition.y *= (1 - value1);
 	newPosition.xy += vec2(dx, dy);
 
+	float shading = (sin(value + u_Time * 10) + 1) / 2 + 0.2;
+
 	gl_Position = newPosition;
 
-	v_Color = vec4(1);
+	v_Color = vec4(shading);
 }
