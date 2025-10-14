@@ -444,6 +444,8 @@ void Renderer::DrawParticle()
 
 void Renderer::DrawGridMesh()
 {
+	m_Time += 0.00016f;
+
 	//Program select
 	int shader = m_GridMeshShader;
 	glUseProgram(shader);

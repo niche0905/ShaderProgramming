@@ -12,7 +12,7 @@ void main()
 {
 	vec4 newPosition = vec4(a_Position, 1);
 
-	float value = (a_Position.x + 0.5) * 2 * c_PI;
+	float value = fract(a_Position.x + 0.5 + u_Time) * 2 * c_PI;
 	float dx = 0;
 	float dy = 0.1 * sin(value);
 
