@@ -26,7 +26,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	// Create Particles
 	CreateParticles(1000);
 
-	CreateGridMesh(20, 20);
+	CreateGridMesh(100, 100);
 
 	if (m_SolidRectShader > 0 && m_VBORect > 0)
 	{

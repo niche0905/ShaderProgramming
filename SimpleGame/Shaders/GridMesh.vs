@@ -34,19 +34,7 @@ void Wave()
 
 	float d = distance(a_Position.xy, vec2(0, 0));
 
-	/*if (d < 0.5) 
-	{
-		v_Color = vec4(1);
-	}
-	else 
-	{
-		v_Color = vec4(0);
-	}*/
-
-	float value = clamp((0.5 - d), 0, 1);
-
-	value = sin(2 * c_PI * (d + u_Time) * 5) * value * 10;
-
+	float value = sin(d * 4 * c_PI * 10 - u_Time * c_PI * 2 * 20);
 	v_Color = vec4(value);
 }
 
