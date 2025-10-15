@@ -43,9 +43,9 @@ void Wave()
 		v_Color = vec4(0);
 	}*/
 
-	float value = clamp(0.5 - d, 0, 1.0);
-	value = ceil(value);
-	value = (0.5 - d) * 100;
+	float value = clamp((0.5 - d), 0, 1);
+
+	value = sin(2 * c_PI * (d + u_Time) * 5) * value * 10;
 
 	v_Color = vec4(value);
 }
