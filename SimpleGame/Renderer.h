@@ -19,6 +19,7 @@ public:
 	void DrawTest();
 	void DrawParticle();
 	void DrawGridMesh();
+	void DrawFullScreenColor(float r, float g, float b, float a);
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -46,12 +47,18 @@ private:
 
 	float m_Time = 0;
 
+	// Particles
 	GLuint m_VBOParticles = 0;
 	GLuint m_VBOParticlesVertexCount = 0;
 	GLuint m_ParticleShader = 0;
 
+	// Grid mesh
 	GLuint m_GridMeshVBO = 0;
 	GLuint m_GridMeshVertexCount = 0;
 	GLuint m_GridMeshShader = 0;
+
+	// Full screen
+	GLuint m_FullScreenVBO = 0;
+	GLuint m_FullScreenShader = 0;
 };
 
