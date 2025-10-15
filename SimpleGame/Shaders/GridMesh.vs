@@ -8,7 +8,7 @@ uniform float u_Time;
 
 const float c_PI = 3.141592;
 
-void main()
+void Flag()
 {
 	vec4 newPosition = vec4(a_Position, 1);
 
@@ -25,4 +25,26 @@ void main()
 	gl_Position = newPosition;
 
 	v_Color = vec4(shading);
+}
+
+void Wave()
+{
+	vec4 newPosition = vec4(a_Position, 1);
+	gl_Position = newPosition;
+
+	float d = distance(a_Position.xy, vec2(0, 0));
+
+	if (d < 0.5) 
+	{
+		v_Color = vec4(1);
+	}
+	else 
+	{
+		v_Color = vec4(0);
+	}
+}
+
+void main()
+{
+	Wave();
 }
