@@ -45,6 +45,7 @@ void Wave()
 
 	float value = clamp(0.5 - d, 0, 1.0);
 	value = ceil(value);
+	value = (0.5 - d) * 100;
 
 	v_Color = vec4(value);
 }
