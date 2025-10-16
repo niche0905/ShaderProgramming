@@ -394,7 +394,7 @@ void Renderer::DrawTest()
 void Renderer::DrawParticle()
 {
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	m_Time += 0.00016f;
 
@@ -481,7 +481,7 @@ void Renderer::DrawGridMesh()
 void Renderer::DrawFullScreenColor(float r, float g, float b, float a)
 {
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Program select
 	int shader = m_FullScreenShader;
