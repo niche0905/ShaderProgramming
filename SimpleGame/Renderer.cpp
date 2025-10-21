@@ -31,8 +31,8 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	// Rain drop points
 	int index = 0;
 	for (int i = 0; i < MAX_POINTS; ++i) {
-		float x = 2 * ((float)rand() / (float)RAND_MAX) * 1;
-		float y = 2 * ((float)rand() / (float)RAND_MAX) * 1;
+		float x = 2 * ((float)rand() / (float)RAND_MAX) - 1;
+		float y = 2 * ((float)rand() / (float)RAND_MAX) - 1;
 		float sTime = ((float)rand() / (float)RAND_MAX) * 6;
 		float lTime = ((float)rand() / (float)RAND_MAX);
 
