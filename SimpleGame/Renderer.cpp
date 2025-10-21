@@ -480,7 +480,7 @@ void Renderer::DrawGridMesh()
 	glUniform1f(uTimeLoc, m_Time);
 
 	int uPointsLoc = glGetUniformLocation(shader, "u_Points");
-	glUniform4fv(uPointsLoc, MAX_POINTS, m_Points);
+	glUniform4fv(uPointsLoc, m_dropCount, m_Points);
 
 	int uDCLoc = glGetUniformLocation(shader, "u_DropCount");
 	glUniform1i(uDCLoc, m_dropCount);

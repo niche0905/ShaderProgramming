@@ -7,7 +7,7 @@
 
 #include "Dependencies\glew.h"
 
-#define MAX_POINTS 500
+#define MAX_POINTS 100
 
 class Renderer
 {

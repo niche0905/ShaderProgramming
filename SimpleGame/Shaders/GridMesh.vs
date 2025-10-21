@@ -53,7 +53,7 @@ void RainDrop()
 	vec2 pos = a_Position.xy;
 
 	float newColor = 0;
-	for (int i = 0; i < MAX_POINTS; ++i)
+	for (int i = 0; i < u_DropCount; ++i)
 	{
 		vec2 cen = u_Points[i].xy;
 		float sTime = u_Points[i].z;
