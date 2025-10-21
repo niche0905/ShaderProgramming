@@ -7,6 +7,8 @@
 
 #include "Dependencies\glew.h"
 
+#define MAX_POINTS 500
+
 class Renderer
 {
 public:
@@ -56,6 +58,10 @@ private:
 	GLuint m_GridMeshVBO = 0;
 	GLuint m_GridMeshVertexCount = 0;
 	GLuint m_GridMeshShader = 0;
+
+	// Rain drop
+	int m_dropCount = 100;
+	float m_Points[MAX_POINTS * 4];
 
 	// Full screen
 	GLuint m_FullScreenVBO = 0;
