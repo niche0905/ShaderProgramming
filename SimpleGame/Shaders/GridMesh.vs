@@ -83,8 +83,7 @@ void Q1()
 	float valueX = (a_Position.x + 0.5) * 2 * c_PI;
 	float valueY = (a_Position.y + 0.5) * 2 * c_PI;
 
-	float grayScale = sin(valueX * 4);
-	grayScale += sin(valueY * 4);
+	float grayScale = max(sin(valueX * 4), sin(valueY * 4));
 	
 	gl_Position = newPosition;
 
