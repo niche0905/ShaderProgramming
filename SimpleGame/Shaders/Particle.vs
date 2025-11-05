@@ -135,7 +135,7 @@ void q2()
 	
 	float value = a_Value * c_PI * 2;
 	float dx = sin(value);
-	float dy = cos(value);
+	float dy = cos(value) * fract(u_Time);
 
 	newPosition.xy += vec2(dx, dy);
 
