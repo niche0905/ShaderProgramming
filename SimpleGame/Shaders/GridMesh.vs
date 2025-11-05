@@ -76,8 +76,22 @@ void RainDrop()
 	v_Color = vec4(newColor);
 }
 
+void Q1()
+{
+	vec4 newPosition = vec4(a_Position, 1);
+
+	float value = (a_Position.x + 0.5) * 2 * c_PI;
+
+	float grayScale = sin(value * 4);
+	
+	gl_Position = newPosition;
+
+	v_Color = vec4(grayScale);
+}
+
 void main()
 {
 	//Wave();
-	RainDrop();
+	//RainDrop();
+	Q1();
 }
