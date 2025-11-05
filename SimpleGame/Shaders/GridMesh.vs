@@ -80,9 +80,11 @@ void Q1()
 {
 	vec4 newPosition = vec4(a_Position, 1);
 
-	float value = (a_Position.x + 0.5) * 2 * c_PI;
+	float valueX = (a_Position.x + 0.5) * 2 * c_PI;
+	float valueY = (a_Position.y + 0.5) * 2 * c_PI;
 
-	float grayScale = sin(value * 4);
+	float grayScale = sin(valueX * 4);
+	grayScale += sin(valueY * 4);
 	
 	gl_Position = newPosition;
 
