@@ -115,7 +115,21 @@ void circleParticle()
 	v_Color = vec4(a_Color.rgb, newAlpha);
 }
 
+void q1()
+{
+	vec4 newPosition = vec4(a_Position, 1);
+	
+	float value = a_Value * c_PI * 2;
+	float dx = 2 * (a_Value - 0.5);
+	float dy = sin(value);
+
+	newPosition.xy += vec2(dx, dy);
+
+	gl_Position = newPosition;
+	v_Color = vec4(a_Color.rgb, 1);
+}
+
 void main()
 {
-	circleParticle();
+	q1();
 }
