@@ -129,7 +129,21 @@ void q1()
 	v_Color = vec4(a_Color.rgb, 1);
 }
 
+void q2()
+{
+	vec4 newPosition = vec4(a_Position, 1);
+	
+	float value = a_Value * c_PI * 2;
+	float dx = sin(value);
+	float dy = cos(value);
+
+	newPosition.xy += vec2(dx, dy);
+
+	gl_Position = newPosition;
+	v_Color = vec4(a_Color.rgb, 1);
+}
+
 void main()
 {
-	q1();
+	q2();
 }
