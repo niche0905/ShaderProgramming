@@ -93,6 +93,6 @@ void Q1()
 void main()
 {
 	//Wave();
-	//RainDrop();
-	Q1();
+	RainDrop();
+	//Q1();
 }
