@@ -22,6 +22,7 @@ public:
 	void DrawParticle();
 	void DrawGridMesh();
 	void DrawFullScreenColor(float r, float g, float b, float a);
+	void DrawFS();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -66,5 +67,9 @@ private:
 	// Full screen
 	GLuint m_FullScreenVBO = 0;
 	GLuint m_FullScreenShader = 0;
+
+	// fragment shader factory
+	GLuint m_FSVBO = 0;
+	GLuint m_FSShader = 0;
 };
 
