@@ -44,6 +44,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 
 	// Texture load
 	m_RGBTexture = CreatePngTexture("./Textures/rgb.png", GL_NEAREST);
+	m_UKTexture = CreatePngTexture("./Textures/uk.png", GL_NEAREST);
 
 	if (m_SolidRectShader > 0 && m_VBORect > 0)
 	{
@@ -503,7 +504,7 @@ void Renderer::DrawGridMesh()
 	int uSampler = glGetUniformLocation(shader, "u_Texture");
 	glUniform1i(uSampler, 0);
 
-	glBindTexture(GL_TEXTURE_2D, m_RGBTexture);
+	glBindTexture(GL_TEXTURE_2D, m_UKTexture);
 
 	int uPointsLoc = glGetUniformLocation(shader, "u_Points");
 	glUniform4fv(uPointsLoc, m_dropCount, m_Points);
