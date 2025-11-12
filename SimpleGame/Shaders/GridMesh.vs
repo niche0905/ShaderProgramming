@@ -4,6 +4,7 @@
 in vec3 a_Position;
 
 out vec4 v_Color;
+out vec2 v_UV;
 
 uniform float u_Time;
 uniform int u_DropCount;
@@ -31,6 +32,8 @@ void Flag()
 	gl_Position = newPosition;
 
 	v_Color = vec4(shading);
+	
+	v_UV = vec2(newPosition.x + 0.5, 0.5 - newPosition.y);
 }
 
 void Wave()
@@ -92,7 +95,5 @@ void Q1()
 
 void main()
 {
-	//Wave();
-	RainDrop();
-	//Q1();
+	Flag();
 }
