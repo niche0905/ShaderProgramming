@@ -33,7 +33,7 @@ void Flag()
 
 	v_Color = vec4(shading);
 	
-	v_UV = vec2(newPosition.x + 0.5, 0.5 - newPosition.y);
+	v_UV = vec2(a_Position.x + 0.5, 0.5 - a_Position.y);
 }
 
 void Wave()
