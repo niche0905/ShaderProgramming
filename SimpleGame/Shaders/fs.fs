@@ -34,7 +34,22 @@ void Circles()
     FragColor = newColor;
 }
 
+void Flag()
+{
+    vec2 newUV = vec2(v_UV.x, (1 - v_UV.y) - 0.5);
+    float sinValue = v_UV.x * 0.2 * sin(v_UV.x * 2 * c_PI - u_Time);
+    vec4 newColor = vec4(0);
+    float width = 0.2 * (1 - v_UV.x);
+    
+    if (sinValue + width > newUV.y && sinValue - width < newUV.y)
+    {
+        newColor = vec4(1);
+    }
+
+    FragColor = newColor;
+}
+
 void main()
 {
-    Circles();
+    Flag();
 }
