@@ -28,7 +28,7 @@ void Circles()
     float d = distance(newUV, center);
     vec4 newColor = vec4(0);
     
-    if (d < 0.5)
+    if (sin(d * 2 * c_PI * 8) > 0)
     {
         newColor = vec4(1);
     }
