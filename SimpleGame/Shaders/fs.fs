@@ -26,7 +26,14 @@ void Circles()
     vec2 newUV = v_UV;
     vec2 center = vec2(0.5, 0.5);
     float d = distance(newUV, center);
-    FragColor = vec4(d);
+    vec4 newColor = vec4(0);
+    
+    if (d < 0.5)
+    {
+        newColor = vec4(1);
+    }
+
+    FragColor = newColor;
 }
 
 void main()
