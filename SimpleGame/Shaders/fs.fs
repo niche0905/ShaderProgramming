@@ -9,7 +9,7 @@ uniform float u_Time;
 
 const float c_PI = 3.14159265359;
 
-void main()
+void Test()
 {
     float s = 0.01;
     vec2 newPos = v_UV;
@@ -19,4 +19,17 @@ void main()
 
     FragColor = newColor;
     //FragColor = vec4(v_UV, 0, 1.0);
+}
+
+void Circles()
+{
+    vec2 newUV = v_UV;
+    vec2 center = vec2(0.5, 0.5);
+    float d = distance(newUV, center);
+    FragColor = vec4(d);
+}
+
+void main()
+{
+    Circles();
 }
