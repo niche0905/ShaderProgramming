@@ -93,13 +93,21 @@ void Q4()
 
 void Q5()
 {
-    float newX = v_UV.x * 2 + (1 - floor(v_UV.y * 2)) / 2;
+    float newX = 2 * v_UV.x + (1 - floor(v_UV.y * 2)) / 2;
     float newY = 2 * v_UV.y;
+
+    FragColor = texture(u_RGBTexture, vec2(newX, newY));
+}
+
+void Q6()
+{
+    float newX = 2 * v_UV.x;
+    float newY = 2 * v_UV.y + floor(v_UV.x * 2) * 3 / 2;
 
     FragColor = texture(u_RGBTexture, vec2(newX, newY));
 }
 
 void main()
 {
-    Q5();
+    Q6();
 }
