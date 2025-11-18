@@ -53,7 +53,20 @@ void Flag()
     FragColor = newColor;
 }
 
+void Q1()
+{
+    float newX = v_UV.x;
+    float newY = 1 - abs((v_UV.y * 2) - 1);
+    //float newY = v_UV.y * 2;
+    //if (newY > 1.0)
+    //{
+    //    newY = 2 - newY;
+    //}
+
+    FragColor = texture(u_RGBTexture, vec2(newX, newY));
+}
+
 void main()
 {
-    Flag();
+    Q1();
 }
