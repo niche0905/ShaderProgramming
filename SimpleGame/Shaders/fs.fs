@@ -45,6 +45,10 @@ void Flag()
     {
         newColor = vec4(1);
     }
+    else
+    {
+        discard;
+    }
 
     FragColor = newColor;
 }
