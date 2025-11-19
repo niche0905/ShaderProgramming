@@ -561,7 +561,7 @@ void Renderer::DrawFullScreenColor(float r, float g, float b, float a)
 void Renderer::DrawFS()
 {
 	m_Time += 0.00066f;
-	int num = (int)floor(m_Time) % 10 + 2;
+	int num = (int)floor(m_Time);
 
 	//Program select
 	int shader = m_FSShader;
