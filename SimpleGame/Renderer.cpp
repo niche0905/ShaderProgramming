@@ -561,6 +561,7 @@ void Renderer::DrawFullScreenColor(float r, float g, float b, float a)
 void Renderer::DrawFS()
 {
 	m_Time += 0.00066f;
+	int num = (int)floor(m_Time) % 10 + 2;
 
 	//Program select
 	int shader = m_FSShader;
@@ -569,11 +570,10 @@ void Renderer::DrawFS()
 	int uTimeLoc = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uTimeLoc, m_Time);
 
-	int nowTime = static_cast<int>(m_Time) % 10;
 	int uSamplerRGB = glGetUniformLocation(shader, "u_RGBTexture");
 	glUniform1i(uSamplerRGB, 0);
 	int uSamplerNum = glGetUniformLocation(shader, "u_NumTexture");
-	glUniform1i(uSamplerNum, (2 + nowTime));
+	glUniform1i(uSamplerNum, num);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_RGBTexture);
