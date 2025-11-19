@@ -233,5 +233,5 @@ void FiveNumber()
 
 void main()
 {
-    Q8();
+    FiveNumber();
 }
