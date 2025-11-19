@@ -127,7 +127,18 @@ void Q44()
     FragColor = texture(u_RGBTexture, vec2(newX, newY));
 }
 
+void Q55()
+{
+    float count = 2;    // uniform
+    float shift = 0.5;  // uniform
+
+    float newX = fract(v_UV.x * count);
+    float newY = fract(fract(v_UV.y * count) + floor(v_UV.x * count) * shift);
+
+    FragColor = texture(u_RGBTexture, vec2(newX, newY));
+}
+
 void main()
 {
-    Q44();
+    Q55();
 }
