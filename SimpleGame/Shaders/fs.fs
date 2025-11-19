@@ -107,7 +107,15 @@ void Q6()
     FragColor = texture(u_RGBTexture, vec2(newX, newY));
 }
 
+void Q33()
+{
+    float newX = fract(v_UV.x * 3);
+    float newY = floor(v_UV.x * 3) / 3 + v_UV.y / 3;
+
+    FragColor = texture(u_RGBTexture, vec2(newX, newY));
+}
+
 void main()
 {
-    Q6();
+    Q33();
 }
