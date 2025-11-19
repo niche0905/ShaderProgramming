@@ -4,6 +4,8 @@ layout(location = 0) out vec4 FragColor;
 
 uniform sampler2D u_RGBTexture;
 uniform sampler2D u_NumTexture;
+uniform sampler2D u_TotalNumTexture;
+uniform int u_Number;
 
 in vec2 v_UV;
 uniform float u_Time;
@@ -144,7 +146,26 @@ void Number()
     FragColor = texture(u_NumTexture, v_UV);
 }
 
+void TotalNumber()
+{
+    // u_UV // 0~1 --> x: 0->0 1->1/5, y: 0->0 1->1/2
+    int tileIndex = (u_Number + 9) % 10; // 0~9)
+
+    const float cols = 5.0;
+    const float rows = 2.0;
+
+    float col = tileIndex % 5;
+    float row = tileIndex / 5;
+
+    vec2 tileSize = vec2(1.0/ cols, 1.0/ rows);
+    vec2 tileOffset = vec2(col, row) * tileSize;
+    
+    vec2 atlasUV = tileOffset + v_UV * tileSize;
+
+    FragColor = texture(u_TotalNumTexture, atlasUV);
+}
+
 void main()
 {
-    Number();
+    TotalNumber();
 }

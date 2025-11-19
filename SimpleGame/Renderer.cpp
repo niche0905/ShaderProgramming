@@ -570,10 +570,15 @@ void Renderer::DrawFS()
 	int uTimeLoc = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uTimeLoc, m_Time);
 
+	int uNumberLoc = glGetUniformLocation(shader, "u_Number");
+	glUniform1i(uNumberLoc, num);
+
 	int uSamplerRGB = glGetUniformLocation(shader, "u_RGBTexture");
 	glUniform1i(uSamplerRGB, 0);
 	int uSamplerNum = glGetUniformLocation(shader, "u_NumTexture");
 	glUniform1i(uSamplerNum, num);
+	int uSamplerTotal = glGetUniformLocation(shader, "u_TotalNumTexture");
+	glUniform1i(uSamplerTotal, 12);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_RGBTexture);
