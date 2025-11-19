@@ -3,6 +3,7 @@
 layout(location = 0) out vec4 FragColor;
 
 uniform sampler2D u_RGBTexture;
+uniform sampler2D u_NumTexture;
 
 in vec2 v_UV;
 uniform float u_Time;
@@ -138,7 +139,12 @@ void Q55()
     FragColor = texture(u_RGBTexture, vec2(newX, newY));
 }
 
+void Number()
+{
+    FragColor = texture(u_NumTexture, v_UV);
+}
+
 void main()
 {
-    Q55();
+    Number();
 }

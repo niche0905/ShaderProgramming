@@ -78,5 +78,7 @@ private:
 	// Textures
 	GLuint m_RGBTexture = 0;
 	GLuint m_UKTexture = 0;
+	GLuint m_numTextures[10] = {};
+	GLuint m_TotalNumTextures = 0;
 };
 

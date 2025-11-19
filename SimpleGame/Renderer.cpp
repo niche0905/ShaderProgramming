@@ -45,6 +45,13 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	// Texture load
 	m_RGBTexture = CreatePngTexture("./Textures/rgb.png", GL_NEAREST);
 	m_UKTexture = CreatePngTexture("./Textures/uk.png", GL_NEAREST);
+	for (int i = 0; i < 10; ++i) {
+		char filePath[256];
+		sprintf_s(filePath, "./Textures/%d.png", i);
+		m_numTextures[i] = CreatePngTexture(filePath, GL_NEAREST);
+	}
+	m_TotalNumTextures = CreatePngTexture("./Textures/numbers.png", GL_NEAREST);
+
 
 	if (m_SolidRectShader > 0 && m_VBORect > 0)
 	{
@@ -553,7 +560,7 @@ void Renderer::DrawFullScreenColor(float r, float g, float b, float a)
 
 void Renderer::DrawFS()
 {
-	m_Time += 0.0066f;
+	m_Time += 0.00066f;
 
 	//Program select
 	int shader = m_FSShader;
@@ -562,10 +569,38 @@ void Renderer::DrawFS()
 	int uTimeLoc = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uTimeLoc, m_Time);
 
+	int nowTime = static_cast<int>(m_Time) % 10;
 	int uSamplerRGB = glGetUniformLocation(shader, "u_RGBTexture");
 	glUniform1i(uSamplerRGB, 0);
+	int uSamplerNum = glGetUniformLocation(shader, "u_NumTexture");
+	glUniform1i(uSamplerNum, (2 + nowTime));
 
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_RGBTexture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, m_UKTexture);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, m_numTextures[0]);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, m_numTextures[1]);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_numTextures[2]);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, m_numTextures[3]);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, m_numTextures[4]);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, m_numTextures[5]);
+	glActiveTexture(GL_TEXTURE8);
+	glBindTexture(GL_TEXTURE_2D, m_numTextures[6]);
+	glActiveTexture(GL_TEXTURE9);
+	glBindTexture(GL_TEXTURE_2D, m_numTextures[7]);
+	glActiveTexture(GL_TEXTURE10);
+	glBindTexture(GL_TEXTURE_2D, m_numTextures[8]);
+	glActiveTexture(GL_TEXTURE11);
+	glBindTexture(GL_TEXTURE_2D, m_numTextures[9]);
+	glActiveTexture(GL_TEXTURE12);
+	glBindTexture(GL_TEXTURE_2D, m_TotalNumTextures);
 
 	int attribPosition = glGetAttribLocation(shader, "a_Position");
 	int attribTexPos = glGetAttribLocation(shader, "a_TexPos");
