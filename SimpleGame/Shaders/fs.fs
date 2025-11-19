@@ -118,6 +118,14 @@ void Q7()
     FragColor = texture(u_RGBTexture, vec2(newX, newY));
 }
 
+void Q8()
+{
+    float newX = fract(v_UV.x * 3);
+    float newY = v_UV.y / 3 + (floor(v_UV.x * 3) * 2 + 1) / 3;
+
+    FragColor = texture(u_RGBTexture, vec2(newX, newY));
+}
+
 void Q33()
 {
     float newX = fract(v_UV.x * 3);
@@ -225,5 +233,5 @@ void FiveNumber()
 
 void main()
 {
-    Q7();
+    Q8();
 }
