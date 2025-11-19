@@ -118,8 +118,8 @@ void Q33()
 void Q44()
 // maybe 5
 {
-    float count = 4;    // uniform
-    float shift = 0.5;  // uniform
+    float count = 8;    // uniform
+    float shift = 0.1 * u_Time;  // uniform
 
     float newX = fract(fract(v_UV.x * count) + (floor(v_UV.y * count) + 1) * shift);
     float newY = fract(v_UV.y * count);
