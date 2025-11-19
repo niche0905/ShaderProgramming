@@ -165,7 +165,57 @@ void TotalNumber()
     FragColor = texture(u_TotalNumTexture, atlasUV);
 }
 
+vec4 GetDigitColor(int digit, vec2 uv)
+{
+    int tileIndex = (digit == 0) ? 9 : (digit - 1);
+
+    const float cols = 5.0;
+    const float rows = 2.0;
+
+    float col = float(tileIndex % 5);
+    float row = float(tileIndex / 5);
+
+    vec2 tileSize = vec2(1.0 / cols, 1.0 / rows);
+    vec2 tileOffset = vec2(col * tileSize.x, row * tileSize.y);
+
+    vec2 atlasUV = tileOffset + uv * tileSize;
+
+    return texture(u_TotalNumTexture, atlasUV);
+}
+
+void FiveNumber()
+{
+    // 1) u_Number를 각 숫자로 나누기
+    int digit0 = (u_Number / 10000) % 10;
+    int digit1 = (u_Number / 1000)  % 10;
+    int digit2 = (u_Number / 100)   % 10;
+    int digit3 = (u_Number / 10)    % 10;
+    int digit4 = (u_Number / 1)     % 10;
+
+    // 2) 어떤 digit을 그릴 지 선택
+    float segW = 1.0 / 5.0;
+    int digit;
+
+    if(v_UV.x < segW * 1.0)
+        digit = digit0;
+    else if(v_UV.x < segW * 2.0)
+        digit = digit1;
+    else if(v_UV.x < segW * 3.0)
+        digit = digit2;
+    else if(v_UV.x < segW * 4.0)
+        digit = digit3;
+    else
+        digit = digit4;
+
+    // 3) 각 digit 영역 내에서 로컬 UV 구하기
+    float localX = fract(v_UV.x * 5.0); // 분리된 타일 내부(0~1)
+    vec2 localUV = vec2(localX, v_UV.y);
+
+    // 4) 선택된 digit 타일 색상
+    FragColor = GetDigitColor(digit, localUV);
+}
+
 void main()
 {
-    TotalNumber();
+    FiveNumber();
 }
