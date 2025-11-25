@@ -83,7 +83,7 @@ void Renderer::CompileAllShaderPrograms()
 	m_FSShader = CompileShaders("./Shaders/fs.vs", "./Shaders/fs.fs");
 	m_TexShader = CompileShaders("./Shaders/Texture.vs", "./Shaders/Texture.fs");
 
-	std::cout << "All Shader compiling is done!!!!" << std::endl;
+	std::cout << "All Shader compiling is done!!!!" << std::endl << std::endl;
 
 }
 

@@ -10,5 +10,5 @@ in vec2 v_Tex;
 void main()
 {
 	//FragColor = vec4(v_Tex, 0, 1);
-	FragColor = texture(u_TexID, v_Tex);
+	FragColor = texture(u_TexID, vec2(v_Tex.x, 1 - v_Tex.y));
 }
