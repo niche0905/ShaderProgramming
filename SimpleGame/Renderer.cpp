@@ -67,6 +67,7 @@ void Renderer::DeleteAllShaderPrograms()
 	glDeleteShader(m_GridMeshShader);
 	glDeleteShader(m_FullScreenShader);
 	glDeleteShader(m_FSShader);
+	glDeleteShader(m_TexShader);
 }
 
 void Renderer::CompileAllShaderPrograms()
@@ -77,6 +78,10 @@ void Renderer::CompileAllShaderPrograms()
 	m_GridMeshShader = CompileShaders("./Shaders/GridMesh.vs", "./Shaders/GridMesh.fs");
 	m_FullScreenShader = CompileShaders("./Shaders/FullScreen.vs", "./Shaders/FullScreen.fs");
 	m_FSShader = CompileShaders("./Shaders/fs.vs", "./Shaders/fs.fs");
+	m_TexShader = CompileShaders("./Shaders/Texture.vs", "./Shaders/Texture.fs");
+
+	std::cout << "All Shader compiling is done!!!!" << std::endl;
+
 }
 
 bool Renderer::IsInitialized()
@@ -176,6 +181,22 @@ void Renderer::CreateVertexBufferObjects()
 	glGenBuffers(1, &m_FSVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_FSVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(fullRectFS), fullRectFS, GL_STATIC_DRAW);
+
+
+	float texRectFS[]
+		=
+	{
+		-1, -1, 0, 0, 1,
+		1, 1, 0, 1, 0,
+		-1, 1, 0, 0, 0,
+		-1, -1, 0, 0, 1,
+		1, -1, 0, 1, 1,
+		1, 1, 0, 1, 0
+	};
+
+	glGenBuffers(1, &m_TexVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, m_TexVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(texRectFS), texRectFS, GL_STATIC_DRAW);
 }
 
 void Renderer::CreateGridMesh(int x, int y)
@@ -627,6 +648,11 @@ void Renderer::DrawFS()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void Renderer::DrawDebugTextures()
+{
+	DrawTexture(0, 0, 0, 0, 0);
+}
+
 void Renderer::GetGLPosition(float x, float y, float *newX, float *newY)
 {
 	*newX = x * 2.f / m_WindowSizeX;
@@ -792,4 +818,28 @@ GLuint Renderer::CreatePngTexture(char* filePath, GLuint samplingMethod)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, samplingMethod);
 
 	return temp;
+}
+
+void Renderer::DrawTexture(float x, float y, float sx, float sy, GLuint texID)
+{
+	//Program select
+	int shader = m_TexShader;
+	glUseProgram(shader);
+
+	int aPos = glGetAttribLocation(shader, "a_Pos");
+	int aTex = glGetAttribLocation(shader, "a_Tex");
+	glEnableVertexAttribArray(aPos);
+	glEnableVertexAttribArray(aTex);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_TexVBO);
+
+	glVertexAttribPointer(aPos, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+	glVertexAttribPointer(aTex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (GLvoid*)(sizeof(float)*3));
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(aPos);
+	glDisableVertexAttribArray(aTex);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

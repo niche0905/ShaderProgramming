@@ -25,6 +25,7 @@ public:
 	void DrawGridMesh();
 	void DrawFullScreenColor(float r, float g, float b, float a);
 	void DrawFS();
+	void DrawDebugTextures();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -38,6 +39,7 @@ private:
 	void GetGLPosition(float x, float y, float *newX, float *newY);
 	void CreateParticles(int count);
 	GLuint CreatePngTexture(char* filePath, GLuint samplingMethod);
+	void DrawTexture(float x, float y, float sx, float sy, GLuint texID);
 
 	bool m_Initialized = false;
 	
@@ -80,5 +82,10 @@ private:
 	GLuint m_UKTexture = 0;
 	GLuint m_numTextures[10] = {};
 	GLuint m_TotalNumTextures = 0;
+
+	// Texture
+	GLuint m_TexVBO = 0;
+	GLuint m_TexShader = 0;
+
 };
 
