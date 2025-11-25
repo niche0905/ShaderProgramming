@@ -650,7 +650,8 @@ void Renderer::DrawFS()
 
 void Renderer::DrawDebugTextures()
 {
-	DrawTexture(0, 0, 0, 0, 0);
+	DrawTexture(-0.5, -0.5, 0.5, 0.5, m_RGBTexture);
+	DrawTexture(+0.5, -0.5, 0.5, 0.5, m_UKTexture);
 }
 
 void Renderer::GetGLPosition(float x, float y, float *newX, float *newY)
@@ -825,6 +826,17 @@ void Renderer::DrawTexture(float x, float y, float sx, float sy, GLuint texID)
 	//Program select
 	int shader = m_TexShader;
 	glUseProgram(shader);
+
+	int uTex = glGetUniformLocation(shader, "u_TexID");
+	glUniform1i(uTex, 0);
+
+	int uTrans = glGetUniformLocation(shader, "u_Trans");
+	glUniform2f(uTrans, x, y);
+	int uScale = glGetUniformLocation(shader, "u_Scale");
+	glUniform2f(uScale, sx, sy);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texID);
 
 	int aPos = glGetAttribLocation(shader, "a_Pos");
 	int aTex = glGetAttribLocation(shader, "a_Tex");
