@@ -655,6 +655,7 @@ void Renderer::DrawDebugTextures()
 {
 	DrawTexture(-0.5, -0.5, 0.5, 0.5, m_RTT0);
 	DrawTexture(+0.5, -0.5, 0.5, 0.5, m_RTT1);
+	DrawTexture(-0.5, +0.5, 0.5, 0.5, m_RTT2);
 }
 
 void Renderer::DrawFBOs()
@@ -670,6 +671,12 @@ void Renderer::DrawFBOs()
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	DrawGridMesh();
+
+	// FBO2 render
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO2);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	DrawFS();
 
 	// Restore
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -937,6 +944,39 @@ void Renderer::CreateFBOs()
 	// Attach
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO1);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RTT1, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+
+	// Check!!
+	status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		assert(0);
+	}
+	//////////////////////////////////////////////////////////////
+
+	// FBO2 //////////////////////////////////////////////////////
+	// Color Gen : texture(render target)
+	glGenTextures(1, &m_RTT2);
+	glBindTexture(GL_TEXTURE_2D, m_RTT2);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	// Depth Gen
+	depthBuffer;
+	glGenRenderbuffers(1, &depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 512, 512);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	// FBO Gen
+	glGenFramebuffers(1, &m_FBO2);
+
+	// Attach
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO2);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RTT2, 0);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 
 	// Check!!
