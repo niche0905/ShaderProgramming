@@ -26,6 +26,7 @@ public:
 	void DrawFullScreenColor(float r, float g, float b, float a);
 	void DrawFS();
 	void DrawDebugTextures();
+	void DrawFBOs();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -40,6 +41,7 @@ private:
 	void CreateParticles(int count);
 	GLuint CreatePngTexture(char* filePath, GLuint samplingMethod);
 	void DrawTexture(float x, float y, float sx, float sy, GLuint texID);
+	void CreateFBOs();
 
 	bool m_Initialized = false;
 	
@@ -86,6 +88,19 @@ private:
 	// Texture
 	GLuint m_TexVBO = 0;
 	GLuint m_TexShader = 0;
+
+	// FBOs
+	GLuint m_FBO0 = 0;
+	GLuint m_FBO1 = 0;
+	GLuint m_FBO2 = 0;
+	GLuint m_FBO3 = 0;
+	GLuint m_FBO4 = 0;
+
+	GLuint m_RTT0 = 0;
+	GLuint m_RTT1 = 0;
+	GLuint m_RTT2 = 0;
+	GLuint m_RTT3 = 0;
+	GLuint m_RTT4 = 0;
 
 };
 

@@ -42,6 +42,9 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 		m_Points[index++] = lTime;
 	}
 
+	// Create FBOs
+	CreateFBOs();
+
 	// Texture load
 	m_RGBTexture = CreatePngTexture("./Textures/rgb.png", GL_NEAREST);
 	m_UKTexture = CreatePngTexture("./Textures/uk.png", GL_NEAREST);
@@ -650,8 +653,27 @@ void Renderer::DrawFS()
 
 void Renderer::DrawDebugTextures()
 {
-	DrawTexture(-0.5, -0.5, 0.5, 0.5, m_RGBTexture);
-	DrawTexture(+0.5, -0.5, 0.5, 0.5, m_UKTexture);
+	DrawTexture(-0.5, -0.5, 0.5, 0.5, m_RTT0);
+	DrawTexture(+0.5, -0.5, 0.5, 0.5, m_RTT1);
+}
+
+void Renderer::DrawFBOs()
+{
+	// FBO0 render
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO0);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	DrawParticle();
+
+	// FBO1 render
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO1);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	DrawGridMesh();
+
+	// Restore
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::GetGLPosition(float x, float y, float *newX, float *newY)
@@ -854,4 +876,78 @@ void Renderer::DrawTexture(float x, float y, float sx, float sy, GLuint texID)
 	glDisableVertexAttribArray(aTex);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::CreateFBOs()
+{
+	// FBO0 //////////////////////////////////////////////////////
+	// Color Gen : texture(render target)
+	glGenTextures(1, &m_RTT0);
+	glBindTexture(GL_TEXTURE_2D, m_RTT0);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	// Depth Gen
+	GLuint depthBuffer;
+	glGenRenderbuffers(1, &depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 512, 512);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	// FBO Gen
+	glGenFramebuffers(1, &m_FBO0);
+
+	// Attach
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RTT0, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+
+	// Check!!
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		assert(0);
+	}
+	//////////////////////////////////////////////////////////////
+
+	// FBO1 //////////////////////////////////////////////////////
+	// Color Gen : texture(render target)
+	glGenTextures(1, &m_RTT1);
+	glBindTexture(GL_TEXTURE_2D, m_RTT1);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	// Depth Gen
+	depthBuffer;
+	glGenRenderbuffers(1, &depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 512, 512);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	// FBO Gen
+	glGenFramebuffers(1, &m_FBO1);
+
+	// Attach
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO1);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RTT1, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+
+	// Check!!
+	status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		assert(0);
+	}
+	//////////////////////////////////////////////////////////////
+
+
+	///!!!!!! Restore frame buffer !!!!!!///
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }
