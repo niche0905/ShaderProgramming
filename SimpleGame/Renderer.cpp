@@ -882,6 +882,9 @@ void Renderer::DrawTexture(float x, float y, float sx, float sy, GLuint texID)
 	int uScale = glGetUniformLocation(shader, "u_Scale");
 	glUniform2f(uScale, sx, sy);
 
+	int uTimeLoc = glGetUniformLocation(shader, "u_Time");
+	glUniform1f(uTimeLoc, m_Time);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texID);
 
