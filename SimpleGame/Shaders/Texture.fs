@@ -22,6 +22,16 @@ const float u_Distortion = 0.1;     // ±¼Àý °­µµ
 
 in vec2 v_Tex;
 
+void Pixelized()
+{
+    vec2 newUV = v_Tex;
+    float resol = 10 * u_Time;
+    newUV.x = floor(newUV.x * resol) / resol;
+    newUV.y = floor(newUV.y * resol) / resol;
+    
+    FragColor = texture(u_TexID, vec2(newUV.x, 1 - newUV.y));
+}
+
 // ----------------------------
 // Hash & Noise Functions
 // ----------------------------
@@ -203,5 +213,6 @@ void main()
     //GaussianBlur();
     //Lens();
     //TV();
-    DropWater();
+    //DropWater();
+    Pixelized();
 }
