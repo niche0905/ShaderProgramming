@@ -1,6 +1,7 @@
 #version 330
 
 layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec4 FragColor1;
 
 uniform sampler2D u_RGBTexture;
 uniform sampler2D u_NumTexture;
@@ -12,7 +13,7 @@ uniform float u_Time;
 
 const float c_PI = 3.14159265359;
 
-void Test()
+vec4 Test()
 {
     float s = 0.01;
     vec2 newPos = v_UV;
@@ -20,11 +21,10 @@ void Test()
 
     vec4 newColor = texture(u_RGBTexture, newPos);
 
-    FragColor = newColor;
-    //FragColor = vec4(v_UV, 0, 1.0);
+    return newColor;
 }
 
-void Circles()
+vec4 Circles()
 {
     vec2 newUV = v_UV;
     vec2 center = vec2(0.5, 0.5);
@@ -34,10 +34,10 @@ void Circles()
     float value = sin(d * 4 * c_PI * 8 - u_Time * 5);
     newColor = vec4(value);
 
-    FragColor = newColor;
+    return newColor;
 }
 
-void Flag()
+vec4 Flag()
 {
     vec2 newUV = vec2(v_UV.x, (1 - v_UV.y) - 0.5);
     float sinValue = v_UV.x * 0.2 * sin(v_UV.x * 2 * c_PI - u_Time);
@@ -53,7 +53,7 @@ void Flag()
         discard;
     }
 
-    FragColor = newColor;
+    return newColor;
 }
 
 void Q1()
@@ -157,12 +157,12 @@ void Q55()
     FragColor = texture(u_RGBTexture, vec2(newX, newY));
 }
 
-void Number()
+vec4 Number()
 {
-    FragColor = texture(u_NumTexture, v_UV);
+    return texture(u_NumTexture, v_UV);
 }
 
-void TotalNumber()
+vec4 TotalNumber()
 {
     // u_UV // 0~1 --> x: 0->0 1->1/5, y: 0->0 1->1/2
     int tileIndex = (u_Number + 9) % 10; // 0~9)
@@ -178,7 +178,7 @@ void TotalNumber()
     
     vec2 atlasUV = tileOffset + v_UV * tileSize;
 
-    FragColor = texture(u_TotalNumTexture, atlasUV);
+    return texture(u_TotalNumTexture, atlasUV);
 }
 
 vec4 GetDigitColor(int digit, vec2 uv)
@@ -199,7 +199,7 @@ vec4 GetDigitColor(int digit, vec2 uv)
     return texture(u_TotalNumTexture, atlasUV);
 }
 
-void FiveNumber()
+vec4 FiveNumber()
 {
     // 1) u_Number를 각 숫자로 나누기
     int digit0 = (u_Number / 10000) % 10;
@@ -228,10 +228,11 @@ void FiveNumber()
     vec2 localUV = vec2(localX, v_UV.y);
 
     // 4) 선택된 digit 타일 색상
-    FragColor = GetDigitColor(digit, localUV);
+    return GetDigitColor(digit, localUV);
 }
 
 void main()
 {
-    FiveNumber();
+    FragColor = FiveNumber();
+    FragColor1 = Circles();
 }

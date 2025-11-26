@@ -97,10 +97,15 @@ private:
 	GLuint m_FBO4 = 0;
 
 	GLuint m_RTT0 = 0;
+	GLuint m_RTT0_1 = 0;
 	GLuint m_RTT1 = 0;
+	GLuint m_RTT1_1 = 0;
 	GLuint m_RTT2 = 0;
+	GLuint m_RTT2_1 = 0;
 	GLuint m_RTT3 = 0;
+	GLuint m_RTT3_1 = 0;
 	GLuint m_RTT4 = 0;
+	GLuint m_RTT4_1 = 0;
 
 };
 
