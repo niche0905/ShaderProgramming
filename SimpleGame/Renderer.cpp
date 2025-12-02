@@ -48,6 +48,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	// Texture load
 	m_RGBTexture = CreatePngTexture("./Textures/rgb.png", GL_NEAREST);
 	m_UKTexture = CreatePngTexture("./Textures/uk.png", GL_NEAREST);
+	m_ParticleTexture = CreatePngTexture("./Textures/particle.png", GL_NEAREST);
 	for (int i = 0; i < 10; ++i) {
 		char filePath[256];
 		sprintf_s(filePath, "./Textures/%d.png", i);
@@ -478,7 +479,13 @@ void Renderer::DrawParticle()
 	int uForceLoc = glGetUniformLocation(shader, "u_Force");
 	glUniform3f(uForceLoc, 4, 0, 0);
 
-	int stride = 15;
+	int uTexLoc = glGetUniformLocation(shader, "u_Texture");
+	glUniform1i(uTexLoc, 0);
+	
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_ParticleTexture);
+
+	int stride = 17;
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOParticles);
 
@@ -490,6 +497,7 @@ void Renderer::DrawParticle()
 	int aLTLoc = glGetAttribLocation(shader, "a_LifeTime");
 	int aMassLoc = glGetAttribLocation(shader, "a_Mass");
 	int aPeriodLoc = glGetAttribLocation(shader, "a_Period");
+	int aTexLoc = glGetAttribLocation(shader, "a_Tex");
 	
 	glEnableVertexAttribArray(aPosLoc);
 	glEnableVertexAttribArray(aValueLoc);
@@ -499,6 +507,7 @@ void Renderer::DrawParticle()
 	glEnableVertexAttribArray(aLTLoc);
 	glEnableVertexAttribArray(aMassLoc);
 	glEnableVertexAttribArray(aPeriodLoc);
+	glEnableVertexAttribArray(aTexLoc);
 
 	glVertexAttribPointer(aPosLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * stride, 0);
 	glVertexAttribPointer(aValueLoc, 1, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 3));
@@ -508,6 +517,7 @@ void Renderer::DrawParticle()
 	glVertexAttribPointer(aLTLoc, 1, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 12));
 	glVertexAttribPointer(aMassLoc, 1, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 13));
 	glVertexAttribPointer(aPeriodLoc, 1, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 14));
+	glVertexAttribPointer(aTexLoc, 2, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 15));
 
 	glDrawArrays(GL_TRIANGLES, 0, m_VBOParticlesVertexCount);
 
@@ -662,14 +672,14 @@ void Renderer::DrawFS()
 
 void Renderer::DrawDebugTextures()
 {
-	DrawTexture(-0.5, -0.5, 0.5, 0.5, m_RTT0);
-	DrawTexture(+0.5, -0.5, 0.5, 0.5, m_RTT0_1);
+	DrawTexture(-0.5, -0.5, 0.5, 0.5, m_HDRRTT0_0);
+	DrawTexture(+0.5, -0.5, 0.5, 0.5, m_HDRRTT0_1);
 
 	//DrawTexture(-0.5, +0.5, 0.5, 0.5, m_RTT1);
 	//DrawTexture(+0.5, +0.5, 0.5, 0.5, m_RTT1_1);
 
-	DrawTexture(-0.5, +0.5, 0.5, 0.5, m_RTT2);
-	DrawTexture(+0.5, +0.5, 0.5, 0.5, m_RTT2_1);
+	//DrawTexture(-0.5, +0.5, 0.5, 0.5, m_RTT2);
+	//DrawTexture(+0.5, +0.5, 0.5, 0.5, m_RTT2_1);
 }
 
 void Renderer::DrawFBOs()
@@ -701,6 +711,20 @@ void Renderer::DrawFBOs()
 	glViewport(0, 0, 512, 512);
 }
 
+void Renderer::DrawBloomParticle()
+{
+	// render to HDRFBO0 (rt : HDRRTT0_0, HDRRTT0_1)
+	glBindFramebuffer(GL_FRAMEBUFFER, m_HDRFBO0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, 512, 512);
+	DrawParticle();
+
+	// Restore
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, 512, 512);
+}
+
 void Renderer::GetGLPosition(float x, float y, float *newX, float *newY)
 {
 	*newX = x * 2.f / m_WindowSizeX;
@@ -711,7 +735,7 @@ void Renderer::CreateParticles(int count)
 {
 	int particleCount = count;
 	int verticesCount = count * 6;									// 1 particle = 2 triangles = 6 vertices
-	int floatCountsPerVertex = 3 + 1 + 4 + 1 + 3 + 1 + 1 + 1;							// x, y, z, value + r, g, b, a + s Time + vx, vy, vz + lifeTime
+	int floatCountsPerVertex = 3 + 1 + 4 + 1 + 3 + 1 + 1 + 1 + 2;							// x, y, z, value + r, g, b, a + s Time + vx, vy, vz + lifeTime + tx, ty
 	int totalFloatsCount = floatCountsPerVertex * verticesCount;	// 
 	int floatCountsPerParticle = floatCountsPerVertex * 6;			// 1 particle = 24 floats
 
@@ -753,6 +777,8 @@ void Renderer::CreateParticles(int count)
 		temp[index] = lifeTime; ++index;			// lifeTime
 		temp[index] = mass; ++index;				// mass
 		temp[index] = period; ++index;				// period
+		temp[index] = 0; ++index;					// tx
+		temp[index] = 1; ++index;					// ty
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY - size / 2; ++index;
@@ -768,7 +794,10 @@ void Renderer::CreateParticles(int count)
 		temp[index] = vz; ++index;
 		temp[index] = lifeTime; ++index;
 		temp[index] = mass; ++index;
-		temp[index] = period; ++index;
+		temp[index] = period; ++index;	
+		temp[index] = 1; ++index;		
+		temp[index] = 1; ++index;		
+
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
@@ -785,6 +814,8 @@ void Renderer::CreateParticles(int count)
 		temp[index] = lifeTime; ++index;
 		temp[index] = mass; ++index;
 		temp[index] = period; ++index;
+		temp[index] = 1; ++index;
+		temp[index] = 0; ++index;
 
 		temp[index] = centerX - size / 2; ++index;
 		temp[index] = centerY - size / 2; ++index;
@@ -801,6 +832,8 @@ void Renderer::CreateParticles(int count)
 		temp[index] = lifeTime; ++index;
 		temp[index] = mass; ++index;
 		temp[index] = period; ++index;
+		temp[index] = 0; ++index;
+		temp[index] = 1; ++index;
 
 		temp[index] = centerX + size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
@@ -817,6 +850,8 @@ void Renderer::CreateParticles(int count)
 		temp[index] = lifeTime; ++index;
 		temp[index] = mass; ++index;
 		temp[index] = period; ++index;
+		temp[index] = 1; ++index;
+		temp[index] = 0; ++index;
 
 		temp[index] = centerX - size / 2; ++index;
 		temp[index] = centerY + size / 2; ++index;
@@ -833,6 +868,8 @@ void Renderer::CreateParticles(int count)
 		temp[index] = lifeTime; ++index;
 		temp[index] = mass; ++index;
 		temp[index] = period; ++index;
+		temp[index] = 0; ++index;
+		temp[index] = 0; ++index;
 	}
 
 	glGenBuffers(1, &m_VBOParticles);
@@ -1036,6 +1073,53 @@ void Renderer::CreateFBOs()
 		assert(0);
 	}
 	//////////////////////////////////////////////////////////////
+
+	glGenFramebuffers(1, &m_HDRFBO0);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_HDRFBO0);
+	glGenTextures(1, &m_HDRRTT0_0);
+	glBindTexture(GL_TEXTURE_2D, m_HDRRTT0_0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 512, 512, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glGenTextures(1, &m_HDRRTT0_1);
+	glBindTexture(GL_TEXTURE_2D, m_HDRRTT0_1);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 512, 512, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_HDRRTT0_0, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_HDRRTT0_1, 0);
+	status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE)
+	{
+		assert(0);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glGenFramebuffers(2, m_PingpongFBO);
+	glGenTextures(2, m_PingpongTexture);
+	for (int i = 0; i < 2; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, m_PingpongFBO[i]);
+		glBindTexture(GL_TEXTURE_2D, m_PingpongTexture[i]);
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGBA16F, 512, 512, 0, GL_RGBA, GL_FLOAT, NULL
+		);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_PingpongTexture[i], 0);
+		status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		if (status != GL_FRAMEBUFFER_COMPLETE)
+		{
+			assert(0);
+		}
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 	///!!!!!! Restore frame buffer !!!!!!///

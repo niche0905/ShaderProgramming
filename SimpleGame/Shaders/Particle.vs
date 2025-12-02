@@ -8,8 +8,10 @@ in vec3 a_Velocity;
 in float a_LifeTime;
 in float a_Mass;
 in float a_Period;
+in vec2 a_Tex;
 out vec4 v_Color;	// fragment shader로 전달할 변수
 					// varying vec4 v_Color;와 같은 의미
+out vec2 v_Tex;
 
 const float c_PI = 3.141592;
 const vec2 c_G = vec2(0, -9.8);
@@ -112,7 +114,7 @@ void circleParticle()
 
 
 	gl_Position = newPosition;
-	v_Color = vec4(a_Color.rgb, newAlpha);
+	v_Color = vec4(a_Color.rgb * 5 * newAlpha, newAlpha);
 }
 
 void q1()
@@ -159,5 +161,7 @@ void q3()
 
 void main()
 {
-	q3();
+	circleParticle();
+
+	v_Tex = a_Tex;
 }

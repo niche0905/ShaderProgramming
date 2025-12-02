@@ -27,6 +27,7 @@ public:
 	void DrawFS();
 	void DrawDebugTextures();
 	void DrawFBOs();
+	void DrawBloomParticle();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -82,6 +83,7 @@ private:
 	// Textures
 	GLuint m_RGBTexture = 0;
 	GLuint m_UKTexture = 0;
+	GLuint m_ParticleTexture = 0;
 	GLuint m_numTextures[10] = {};
 	GLuint m_TotalNumTextures = 0;
 
@@ -106,6 +108,14 @@ private:
 	GLuint m_RTT3_1 = 0;
 	GLuint m_RTT4 = 0;
 	GLuint m_RTT4_1 = 0;
+
+	// HDR FBOs
+	GLuint m_HDRFBO0 = 0;
+	GLuint m_HDRRTT0_0 = 0;
+	GLuint m_HDRRTT0_1 = 0;
+
+	GLuint m_PingpongFBO[2] = { 0, };
+	GLuint m_PingpongTexture[2] = { 0, };
 
 };
 

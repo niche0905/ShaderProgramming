@@ -3,6 +3,11 @@
 layout(location=0) out vec4 FragColor;
 
 uniform sampler2D u_TexID;
+uniform sampler2D u_TexID1;
+
+uniform float u_Time;           // 움직임용 시간
+uniform int u_Method;          // 0: Normal, 1:BlurH, 2:BlueV, 3:merge
+
 const vec2 u_TexelSize = vec2(1/512, 1/512);
 const float u_Strength = 0.2;   // +볼록, -오목
 const vec2  u_Center = vec2(0.5, 0.5);
@@ -12,7 +17,6 @@ const float u_Scanline = 0.05;      // 스캔라인 강도 (0.0 ~ 1.0)
 const float u_Curvature = 0.05;     // 화면 곡면 왜곡 정도 (0.0 ~ 0.3)
 const float u_Vignette = 0.05;      // 비네팅 강도 (0.0 ~ 1.0)
 
-uniform float u_Time;           // 움직임용 시간
 const vec2 u_Resolution = vec2(512, 512);      // 화면 해상도
 
 // 물방울 파라미터
@@ -210,9 +214,15 @@ void Lens()
 
 void main()
 {
-    //GaussianBlur();
-    //Lens();
-    //TV();
-    //DropWater();
-    Pixelized();
+    FragColor = vec4(0);
+
+    if (m_Method == 0) {
+        FragColor = texture(u_TexID, vec2(v_Tex.x, 1 - v_Tex.y));
+    }
+    else if (m_Method == 1) {
+    }
+    else if (m_Method == 2) {
+    }
+    else if (m_Method == 3) {
+    }
 }
