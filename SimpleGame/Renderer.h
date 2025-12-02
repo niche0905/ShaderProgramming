@@ -41,7 +41,7 @@ private:
 	void GetGLPosition(float x, float y, float *newX, float *newY);
 	void CreateParticles(int count);
 	GLuint CreatePngTexture(char* filePath, GLuint samplingMethod);
-	void DrawTexture(float x, float y, float sx, float sy, GLuint texID);
+	void DrawTexture(float x, float y, float sx, float sy, GLuint texID, GLuint texID1, GLuint method);
 	void CreateFBOs();
 
 	bool m_Initialized = false;

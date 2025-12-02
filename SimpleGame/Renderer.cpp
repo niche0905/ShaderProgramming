@@ -464,7 +464,7 @@ void Renderer::DrawParticle()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	m_Time += 0.00016f;
+	m_Time += 0.0016f;
 
 	//Program select
 	GLuint shader = m_ParticleShader;
@@ -672,14 +672,15 @@ void Renderer::DrawFS()
 
 void Renderer::DrawDebugTextures()
 {
-	DrawTexture(-0.5, -0.5, 0.5, 0.5, m_HDRRTT0_0);
-	DrawTexture(+0.5, -0.5, 0.5, 0.5, m_HDRRTT0_1);
+	//DrawTexture(-0.5, -0.5, 0.5, 0.5, m_PingpongTexture[0], 0, 0);
+	//DrawTexture(+0.5, -0.5, 0.5, 0.5, m_PingpongTexture[1], 0, 0);
+
+	//DrawTexture(-0.5, +0.5, 0.5, 0.5, m_HDRRTT0_0, 0, 0);
+	//DrawTexture(+0.5, +0.5, 0.5, 0.5, m_HDRRTT0_1, 0, 0);
 
 	//DrawTexture(-0.5, +0.5, 0.5, 0.5, m_RTT1);
 	//DrawTexture(+0.5, +0.5, 0.5, 0.5, m_RTT1_1);
 
-	//DrawTexture(-0.5, +0.5, 0.5, 0.5, m_RTT2);
-	//DrawTexture(+0.5, +0.5, 0.5, 0.5, m_RTT2_1);
 }
 
 void Renderer::DrawFBOs()
@@ -713,16 +714,32 @@ void Renderer::DrawFBOs()
 
 void Renderer::DrawBloomParticle()
 {
-	// render to HDRFBO0 (rt : HDRRTT0_0, HDRRTT0_1)
+	// 1. render to HDRFBO0 (rt : HDRRTT0_0, HDRRTT0_1)
 	glBindFramebuffer(GL_FRAMEBUFFER, m_HDRFBO0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, 512, 512);
 	DrawParticle();
 
-	// Restore
+	// 2. blur
+	glBindFramebuffer(GL_FRAMEBUFFER, m_PingpongFBO[0]);	// render to m_PingpongTexture[0]
+	DrawTexture(0, 0, 1, 1, m_HDRRTT0_1, 0, 1);
+
+	for (int i = 0; i < 20; ++i) {
+		glBindFramebuffer(GL_FRAMEBUFFER, m_PingpongFBO[1]);
+		DrawTexture(0, 0, 1, 1, m_PingpongTexture[0], 0, 2);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, m_PingpongFBO[0]);
+		DrawTexture(0, 0, 1, 1, m_PingpongTexture[1], 0, 1);
+	}
+
+	// Restore to main framebuffer
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, 512, 512);
+
+	// 3. merge
+	DrawTexture(0, 0, 1, 1, m_HDRRTT0_0, m_PingpongTexture[0], 3);
+
 }
 
 void Renderer::GetGLPosition(float x, float y, float *newX, float *newY)
@@ -905,7 +922,7 @@ GLuint Renderer::CreatePngTexture(char* filePath, GLuint samplingMethod)
 	return temp;
 }
 
-void Renderer::DrawTexture(float x, float y, float sx, float sy, GLuint texID)
+void Renderer::DrawTexture(float x, float y, float sx, float sy, GLuint texID, GLuint texID1, GLuint method)
 {
 	//Program select
 	int shader = m_TexShader;
@@ -913,6 +930,8 @@ void Renderer::DrawTexture(float x, float y, float sx, float sy, GLuint texID)
 
 	int uTex = glGetUniformLocation(shader, "u_TexID");
 	glUniform1i(uTex, 0);
+	int uTex1 = glGetUniformLocation(shader, "u_TexID1");
+	glUniform1i(uTex1, 1);
 
 	int uTrans = glGetUniformLocation(shader, "u_Trans");
 	glUniform2f(uTrans, x, y);
@@ -922,8 +941,13 @@ void Renderer::DrawTexture(float x, float y, float sx, float sy, GLuint texID)
 	int uTimeLoc = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uTimeLoc, m_Time);
 
+	int uMethodLoc = glGetUniformLocation(shader, "u_Method");
+	glUniform1i(uMethodLoc, method);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texID);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texID1);
 
 	int aPos = glGetAttribLocation(shader, "a_Pos");
 	int aTex = glGetAttribLocation(shader, "a_Tex");
