@@ -48,7 +48,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	// Texture load
 	m_RGBTexture = CreatePngTexture("./Textures/rgb.png", GL_NEAREST);
 	m_UKTexture = CreatePngTexture("./Textures/uk.png", GL_NEAREST);
-	m_ParticleTexture = CreatePngTexture("./Textures/particle.png", GL_NEAREST);
+	m_ParticleTexture = CreatePngTexture("./Textures/snow.png", GL_NEAREST);
 	for (int i = 0; i < 10; ++i) {
 		char filePath[256];
 		sprintf_s(filePath, "./Textures/%d.png", i);
